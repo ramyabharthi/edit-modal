@@ -10,11 +10,11 @@ const routes = [
   { path: '/users/add', component: AddForm },
   { path: '/users/edit/:index', component: EditForm },
   { path: '/users/delete/:index', component: DeleteForm },
-  { path: '/:pathMatch(.*)*', component: NotFound },
+  { path: '/:pathMatch(.*)', component: NotFound }, // Wildcard route for unmatched paths
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes
 });
 

@@ -1,21 +1,18 @@
 <template>
   <div>
-     <FormList/>
+    <router-view></router-view>
+
 
    </div>
  
  </template>
  
  <script >
- import FormList from './components/FormList.vue';
  
  
  export default {
    name: 'App',
-   components: {
-           FormList,
-           
-   }
+   
  }
  </script>
  

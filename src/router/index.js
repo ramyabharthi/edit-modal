@@ -6,18 +6,28 @@ const routes = [
   {
     path: '/',
     component: FormList,
-    children: [
-      { path: 'add', component: FormList },
-      { path: 'edit/:id', component: FormList },
-      { path: 'delete/:id', component: FormList },
-    ],
   },
-  { path: '/:pathMatch(.*)', component: NotFound },
+  {
+    path: '/add',
+    component: FormList,
+  },
+  {
+    path: '/edit/:id',
+    component: FormList,
+  },
+  {
+    path: '/delete/:id',
+    component: FormList,
+  },
+  {
+    path: '/:pathMatch(.*)',
+    component: NotFound,
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 });
 
 export default router;

@@ -97,6 +97,9 @@ export default {
     if (storedFormList) {
       this.formList = JSON.parse(storedFormList);
     }
+    if (this.$route.path === '/add') {
+    this.openModal(null);
+  }
   },
   computed: {
     currentAction() {
@@ -118,7 +121,7 @@ export default {
     const form = this.formList[index];
     this.editIndex = index;
     this.editData = { ...form };
-    this.$router.push(`/edit/${index}`); 
+    this.$router.push(`/edit/${index}`);
   } else {
     this.editIndex = null;
     this.editData = {
@@ -127,10 +130,13 @@ export default {
       email: '',
       password: '',
     };
-    this.$router.push('/add'); 
+    if (this.$route.path !== '/add') {
+      this.$router.push('/add');
+    }
   }
   this.clearErrors();
 },
+
 
     closeModal() {
       this.showModal = false;

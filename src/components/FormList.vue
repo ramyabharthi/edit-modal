@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h2>Add user</h2>
+    <h2>{{ getTitle() }}</h2>
     <div class="form-box">
       <button class="add-button" @click="openModal(null)">+</button>
       <table class="table">
@@ -29,7 +29,7 @@
     </div>
     <div class="modal" v-if="showModal">
       <div class="modal-content">
-        <h3>{{ editIndex !== null ? 'Edit Form' : 'Create Form' }}</h3>
+        <h3>{{ getModalTitle() }}</h3>
         <div class="form-field">
           <label for="name">Name:</label>
           <input type="text" id="name" v-model="editData.name" />
@@ -90,6 +90,7 @@ export default {
       },
       showDeleteConfirmation: false,
       deleteIndex: null,
+      currentRoute: '', 
     };
   },
   created() {
@@ -97,31 +98,50 @@ export default {
     if (storedFormList) {
       this.formList = JSON.parse(storedFormList);
     }
-    if (this.$route.path === '/add') {
-    this.openModal(null);
-  }
+    this.currentRoute = this.$route.name; 
+
+    if (this.currentRoute === 'AddForm') {
+      this.openModal(null);
+    }
   },
   computed: {
     currentAction() {
-      const routePath = this.$route.path;
-      if (routePath === '/add') {
-        return 'add';
-      } else if (routePath.includes('/edit')) {
-        return 'edit';
-      } else if (routePath.includes('/delete')) {
-        return 'delete';
-      }
-      return '';
+      return this.currentRoute; 
     },
   },
   methods: {
+    getTitle() {
+      switch (this.currentAction) {
+        case 'FormList':
+          return 'Form List';
+        case 'AddForm':
+          return 'Add Form';
+        case 'EditForm':
+          return 'Edit Form';
+        case 'DeleteForm':
+          return 'Delete Form';
+        default:
+          return 'Page Not Found';
+      }
+    },
+    getModalTitle() {
+      switch (this.currentAction) {
+        case 'AddForm':
+          return 'Create Form';
+        case 'EditForm':
+          return 'Edit Form';
+        default:
+          return '';
+      }
+    },
     openModal(index) {
   this.showModal = true;
   if (index !== null) {
     const form = this.formList[index];
     this.editIndex = index;
     this.editData = { ...form };
-    this.$router.push(`/edit/${index}`);
+    this.currentRoute = 'EditForm';
+    this.$router.push({ name: 'EditForm', params: { id: index } });
   } else {
     this.editIndex = null;
     this.editData = {
@@ -130,13 +150,11 @@ export default {
       email: '',
       password: '',
     };
-    if (this.$route.path !== '/add') {
-      this.$router.push('/add');
-    }
+    this.currentRoute = 'AddForm';
+    this.$router.push({ name: 'AddForm' }); 
   }
   this.clearErrors();
 },
-
 
     closeModal() {
       this.showModal = false;
@@ -149,8 +167,9 @@ export default {
       };
       this.clearErrors();
 
-      if (this.currentAction === 'add') {
-        this.$router.push('/');
+      if (this.currentRoute === 'AddForm') {
+        this.currentRoute = 'FormList'; 
+        this.$router.push({ name: 'FormList' });
       }
     },
     createForm() {
@@ -161,31 +180,27 @@ export default {
           this.formList.push({ ...this.editData });
         }
 
-        localStorage.setItem('formList', JSON.stringify(this.formList));
-
-        this.closeModal();
+        this.closeModal(); 
       }
     },
     showDeleteModal(index) {
       this.showDeleteConfirmation = true;
       this.deleteIndex = index;
 
-      if (this.currentAction !== 'delete') {
-        this.$router.push(`/delete/${index}`);
+      if (this.currentAction !== 'DeleteForm') {
+        this.$router.push({ name: 'DeleteForm', params: { id: index } });
       }
     },
     closeDeleteModal() {
       this.showDeleteConfirmation = false;
       this.deleteIndex = null;
 
-      if (this.currentAction === 'delete') {
-        this.$router.push('/');
+      if (this.currentAction === 'DeleteForm') {
+        this.$router.push({ name: 'FormList' });
       }
     },
     deleteForm(index) {
       this.formList.splice(index, 1);
-
-      localStorage.setItem('formList', JSON.stringify(this.formList));
 
       this.closeDeleteModal();
     },

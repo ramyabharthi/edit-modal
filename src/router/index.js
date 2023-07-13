@@ -5,22 +5,28 @@ import NotFound from '../components/NotFound.vue';
 const routes = [
   {
     path: '/',
+    name: 'FormList',
+    component: FormList,
+  },
+ 
+  {
+    path: '/users/add',
+    name: 'AddForm',
     component: FormList,
   },
   {
-    path: '/add',
+    path: '/users/edit/:id',
+    name: 'EditForm',
     component: FormList,
   },
   {
-    path: '/edit/:id',
-    component: FormList,
-  },
-  {
-    path: '/delete/:id',
+    path: '/users/delete/:id',
+    name: 'DeleteForm',
     component: FormList,
   },
   {
     path: '/:pathMatch(.*)',
+    name: 'NotFound',
     component: NotFound,
   },
 ];

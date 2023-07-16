@@ -1,34 +1,51 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import FormList from '../components/FormList.vue';
-import NotFound from '../components/NotFound.vue';
+import FormModal from '../components/FormModal.vue';
+import DeleteModal from '../components/DeleteModal.vue';
+import NotFound from '../components/NotFound.vue'
 
 const routes = [
   {
     path: '/',
+    redirect: '/formlist', 
+  },
+  {
+    path: '/formlist',
     name: 'FormList',
     component: FormList,
-  },
- 
+  children: [
   {
-    path: '/users/add',
+    path: 'add',
     name: 'AddForm',
-    component: FormList,
+    component: FormModal,
+    props: {
+      editIndex: null,
+    },
   },
   {
-    path: '/users/edit/:id',
+    path: 'edit/:index',
     name: 'EditForm',
-    component: FormList,
+    component: FormModal,
+    props: true,
   },
   {
-    path: '/users/delete/:id',
+    path: 'delete/:index',
     name: 'DeleteForm',
-    component: FormList,
+    component: DeleteModal,
+    props: true,
+  },
+  
+  
+]
+
+
   },
   {
-    path: '/:pathMatch(.*)',
+    path: '/:pathMatch(.*)*', // Catch-all route
     name: 'NotFound',
     component: NotFound,
   },
+  
 ];
 
 const router = createRouter({

@@ -70,11 +70,7 @@ export default {
       editIndex: null,
     };
   },
-  computed: {
-    isAddFormRouteActive() {
-      return this.$route.path === "/formlist/add";
-    },
-  },
+ 
   watch: {
     $route(to, from) {
       if (to.name === "AddForm") {
@@ -143,7 +139,7 @@ export default {
   this.editIndex = index;
   const deleteUrl = `/formlist/delete/${index}`;
   window.history.pushState({ index }, '', deleteUrl);
-  this.showModal = false; // Close the form modal before opening the delete modal
+  this.showModal = false; 
   this.showDeleteModal = true;
 },
 
@@ -159,12 +155,24 @@ export default {
   this.showDeleteModal = false;
   window.history.replaceState(null, '', '/formlist');
 },
-
-    checkAddRoute() {
-    if (this.$route.path === "/formlist/add") {
-      this.openModal(null);
+checkAddRoute() {
+  const path = this.$route.path;
+  if (path === "/formlist/add") {
+    this.openModal(null);
+  } else if (path.includes("/formlist/edit/")) {
+    const index = parseInt(path.split("/").pop());
+    if (!isNaN(index) && index >= 0 && index < this.formList.length) {
+      this.openModal(index);
     }
-  },
+  } else if (path.includes("/formlist/delete/")) {
+    const index = parseInt(path.split("/").pop());
+    if (!isNaN(index) && index >= 0 && index < this.formList.length) {
+      this.confirmDelete(index);
+    }
+  }
+},
+
+
   },
   components: {
     FormModal,
@@ -311,6 +319,17 @@ export default {
     border: none;
     border-radius: 5px;
     background-color: #E6321F;
+    color: #fff;
+    cursor: pointer;
+  }
+  .confirm-button{
+    font-size: 14px;
+    padding: 6px 12px;
+    margin-left: 5px;
+    border: none;
+    border-radius: 5px;
+
+    background-color: #45B2C9;
     color: #fff;
     cursor: pointer;
   }
